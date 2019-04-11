@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="toolbarDashboard">#1B5E20</color>
+    <color name="primaryText">#FFFFFF</color>
+    <color name="textPrimary">#212121</color>
+    <color name="textSecondary">#727272</color>
+    <color name="dividers">#B6B6B6</color>
+    <color name="divider">#B6B6B6</color>
+    <color name="primary_dark">#388E3C</color>
+    <color name="mainitemBackground">#fafafa</color>
+    <color name="overlay">#4CAF50</color>
+    <color name="primary_nav_icon">#66BB6A</color>
+    <color name="text_primary_emphasis_high">#4A4A4A</color>
+    <color name="text_primary_emphasis_med">#B4B4B4</color>
+    <color name="dialog_accent">#8BC34A</color>
+    <color name="login_screen">#226F2F</color>
+    <color name="login_splash">#AED581</color>
+    <color name="login_splash_foreground">#8BC34A</color>
+    <color name="login_screen_splash">#64DD17</color>
+
+    <color name="black_87">#de000000</color>
+    <color name="black_20">#33333333</color>
+    <color name="black_38">#61000000</color>
+    <color name="black__54">#89000000</color>
+
+    <color name="icon_color">#6D6D6D</color>
+</resources>

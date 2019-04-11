@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">EplPredictor</string>
+    <string name="label_profile_name">SAMPLE NAME</string>
+    <string name="label_email">SAMPLE EMAIL</string>
+    <string name="nav_home">Home</string>
+    <string name="web_client_id">441306043745-qp53t6o59km4v2kkb4l5a4q45lejtavp.apps.googleusercontent.com</string>
+    <string name="login_error">Login Unsuccessful</string>
+    <string name="auth_fail_error">Authentication Failed</string>
+</resources>
