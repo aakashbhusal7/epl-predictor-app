@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#D81B60</color>
     <color name="toolbarDashboard">#1B5E20</color>
     <color name="primaryText">#FFFFFF</color>
@@ -20,6 +20,8 @@
     <color name="login_splash">#AED581</color>
     <color name="login_splash_foreground">#8BC34A</color>
     <color name="login_screen_splash">#64DD17</color>
+
+    <color name="sampleToolbar">#5E35B1 </color>
 
     <color name="black_87">#de000000</color>
     <color name="black_20">#33333333</color>

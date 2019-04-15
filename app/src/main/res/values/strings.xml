@@ -6,4 +6,16 @@
     <string name="web_client_id">441306043745-qp53t6o59km4v2kkb4l5a4q45lejtavp.apps.googleusercontent.com</string>
     <string name="login_error">Login Unsuccessful</string>
     <string name="auth_fail_error">Authentication Failed</string>
+    <string name="open_drawer">open</string>
+    <string name="close_drawer">close</string>
+    <string name="inbox">Inbox</string>
+    <string name="starred">Starred</string>
+    <string name="sent_mail">Sent Mail</string>
+    <string name="drafts">Drafts</string>
+    <string name="sub_header">Others</string>
+    <string name="spam">Spam</string>
+    <string name="trash">Trash</string>
+    <string name="receipts">Receipts</string>
+    <string name="setting">Settings</string>
+    <string name="contactUs">COntact</string>
 </resources>
