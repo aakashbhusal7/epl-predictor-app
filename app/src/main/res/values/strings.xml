@@ -18,4 +18,6 @@
     <string name="receipts">Receipts</string>
     <string name="setting">Settings</string>
     <string name="contactUs">COntact</string>
+    <string name="fixtures_fragment">FIXTURES_FRAGMENT</string>
+    <string name="alert_dialog_positive">Ok</string>
 </resources>

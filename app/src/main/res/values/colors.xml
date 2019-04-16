@@ -20,6 +20,8 @@
     <color name="login_splash">#AED581</color>
     <color name="login_splash_foreground">#8BC34A</color>
     <color name="login_screen_splash">#64DD17</color>
+    <color name="text_highlight">#E0E0E0</color>
+    <color name="BorderLine">#BDBDBD</color>
 
     <color name="sampleToolbar">#5E35B1 </color>
 

@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.eplpredictor.R;
+import com.example.eplpredictor.ui.fragments.fixtures.FixturesFragment;
 import com.example.eplpredictor.ui.login.LoginActivity;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -85,6 +86,11 @@ public class DashboardActivity extends AppCompatActivity implements GoogleApiCli
                 .enableAutoManage(this,this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API,googleSignInOptions)
                 .build();
+
+        FixturesFragment fixturesFragment= new FixturesFragment();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_overlay,fixturesFragment,getString(R.string.fixtures_fragment))
+                .commit();
     }
 
     private void setNavHeader(){
