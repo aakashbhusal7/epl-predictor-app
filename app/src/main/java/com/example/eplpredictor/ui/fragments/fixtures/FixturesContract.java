@@ -11,6 +11,7 @@ import java.util.List;
 public interface FixturesContract {
     interface Presenter{
         void fetchData();
+        void clearDisposables();
     }
     interface View extends BaseView<FixturesContract.Presenter>{
         void displayResult(Fixtures fixtures);

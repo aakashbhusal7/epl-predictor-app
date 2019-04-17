@@ -15,7 +15,8 @@ import retrofit2.http.Query;
 public interface RestApi {
 
     @GET("competitions/2021/matches")
-    Observable<Fixtures>getFixtures(@Header ("X-Auth-Token")"6a7b8455467e4520a170b56a2edf67e8", @Query("matchday") int matchday);
+    Observable<Fixtures>getFixtures(@Header("X-Auth-Token")String token,
+                                    @Query("matchday") int matchday);
 
 
 }

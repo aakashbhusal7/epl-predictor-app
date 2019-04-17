@@ -12,7 +12,7 @@ public class HomeTeam {
     @Expose
     private int homeId;
 
-    @SerializedName("homeTeam")
+    @SerializedName("name")
     @Expose
     private String homeTeamName;
 

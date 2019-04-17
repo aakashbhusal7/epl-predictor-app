@@ -30,8 +30,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 
-
-
 /**
  * Created by aakash on 11,April,2019
  */
@@ -183,7 +181,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 //}
 
 public class LoginActivity extends AppCompatActivity implements LoginContract.View, GoogleApiClient.ConnectionCallbacks,
-GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private GoogleApiClient googleApiClient;
     private FirebaseAuth firebaseAuth;
@@ -227,7 +225,6 @@ GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
                 .build();
 
 
-
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -269,10 +266,10 @@ GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     private void performSignIn(GoogleSignInResult result) {
         if (result.isSuccess()) {
             GoogleSignInAccount googleSignInAccount = result.getSignInAccount();
-            idToken=googleSignInAccount.getIdToken();
+            idToken = googleSignInAccount.getIdToken();
 
-            name=googleSignInAccount.getDisplayName();
-            email=googleSignInAccount.getEmail();
+            name = googleSignInAccount.getDisplayName();
+            email = googleSignInAccount.getEmail();
             AuthCredential credential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
             firebaseAuthFromGoogle(credential);
         } else {
@@ -305,7 +302,7 @@ GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     }
 
     private void createFirebaseHelper() {
-       // final String encodedEmail = Utils.encodeEmail(email.toLowerCase());
+        // final String encodedEmail = Utils.encodeEmail(email.toLowerCase());
     }
 
     @Override

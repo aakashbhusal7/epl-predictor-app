@@ -52,7 +52,6 @@ public class DashboardActivity extends AppCompatActivity implements GoogleApiCli
         toolbar=findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
 
-
         drawerLayout= findViewById(R.id.drawer_layout2);
         navigationView=findViewById(R.id.navigation_view2);
         navigationView.setNavigationItemSelectedListener(this);

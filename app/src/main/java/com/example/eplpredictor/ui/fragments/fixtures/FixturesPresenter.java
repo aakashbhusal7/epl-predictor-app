@@ -2,6 +2,7 @@ package com.example.eplpredictor.ui.fragments.fixtures;
 
 import android.util.Log;
 
+import com.example.eplpredictor.BuildConfig;
 import com.example.eplpredictor.model.remote.Fixtures;
 import com.example.eplpredictor.network.NetworkClient;
 import com.example.eplpredictor.network.RestApi;
@@ -19,53 +20,58 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class FixturesPresenter implements FixturesContract.Presenter {
 
-    private static String TAG=FixturesPresenter.class.getSimpleName();
+    private static String TAG = FixturesPresenter.class.getSimpleName();
     private FixturesContract.View view;
     private String errorMessage;
-    private CompositeDisposable disposable= new CompositeDisposable();
+    private CompositeDisposable disposable = new CompositeDisposable();
 
-    public FixturesPresenter(FixturesContract.View view){
-        this.view=view;
+    public FixturesPresenter(FixturesContract.View view) {
+        this.view = view;
         this.view.setPresenter(this);
     }
 
     @Override
     public void fetchData() {
+        view.showProgressDialog();
         disposable.add(fixturesObservable()
                 .subscribeOn(Schedulers.io())
                 .doOnNext(new Consumer<Fixtures>() {
                     @Override
                     public void accept(Fixtures fixtures) throws Exception {
-                        //view.displayResult(fixtures);
                     }
                 }).observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<Fixtures>(){
+                .subscribeWith(new DisposableObserver<Fixtures>() {
                                    @Override
                                    public void onNext(Fixtures fixtures) {
-                                        view.displayResult(fixtures);
-                                        view.hideProgressDialog();
+                                       view.displayResult(fixtures);
+                                       view.hideProgressDialog();
                                    }
 
                                    @Override
                                    public void onError(Throwable e) {
                                        errorMessage = ErrorMessageFactory.createMessage(e);
                                        view.showAlertDialog(errorMessage);
-                                       Log.d(TAG,"onError");
+                                       Log.d(TAG, "onError");
                                        view.hideProgressDialog();
                                    }
 
                                    @Override
                                    public void onComplete() {
-                                    Log.d(TAG,"On complete");
+                                       Log.d(TAG, "On complete");
                                    }
                                }
                 ));
 
     }
 
-    private Observable<Fixtures>fixturesObservable(){
+    private Observable<Fixtures> fixturesObservable() {
         return NetworkClient.getRetrofit()
                 .create(RestApi.class)
-                .getFixtures(34);
+                .getFixtures(BuildConfig.apikey, 34);
+    }
+
+    @Override
+    public void clearDisposables() {
+        disposable.dispose();
     }
 }

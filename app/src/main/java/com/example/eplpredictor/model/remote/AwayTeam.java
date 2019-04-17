@@ -12,7 +12,7 @@ public class AwayTeam {
     @Expose
     private String awayId;
 
-    @SerializedName("awayTeam")
+    @SerializedName("name")
     @Expose
     private String awayTeamName;
 
