@@ -10,25 +10,25 @@ public class FullTime {
 
     @SerializedName("homeTeam")
     @Expose
-    private int homeTeamScore;
+    private String homeTeamScore;
 
     @SerializedName("awayTeam")
     @Expose
-    private int awayTeamScore;
+    private String awayTeamScore;
 
-    public int getHomeTeamScore() {
+    public String getHomeTeamScore() {
         return homeTeamScore;
     }
 
-    public void setHomeTeamScore(int homeTeamScore) {
+    public void setHomeTeamScore(String homeTeamScore) {
         this.homeTeamScore = homeTeamScore;
     }
 
-    public int getAwayTeamScore() {
+    public String getAwayTeamScore() {
         return awayTeamScore;
     }
 
-    public void setAwayTeamScore(int awayTeamScore) {
+    public void setAwayTeamScore(String awayTeamScore) {
         this.awayTeamScore = awayTeamScore;
     }
 }

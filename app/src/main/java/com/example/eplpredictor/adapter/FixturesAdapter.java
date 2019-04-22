@@ -2,6 +2,7 @@ package com.example.eplpredictor.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.eplpredictor.R;
+import com.example.eplpredictor.model.remote.Fixtures;
 import com.example.eplpredictor.model.remote.HomeTeam;
 import com.example.eplpredictor.model.remote.Matches;
 import com.example.eplpredictor.utils.ConsoleColorConstants;
@@ -19,9 +21,14 @@ import com.example.eplpredictor.utils.ConsoleColorConstants;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
 
 /**
  * Created by aakash on 16,April,2019
@@ -31,12 +38,15 @@ public class FixturesAdapter extends RecyclerView.Adapter<FixturesAdapter.Fixtur
     private static String TAG=FixturesAdapter.class.getSimpleName();
 
     private Context context;
-    private List<Matches> matchesList;
+    private List<Matches> matchesList= new ArrayList<>();
+    private List<Fixtures> fixturesList;
     private HomeTeam homeTeam;
     private String homeName;
     FixturesViewHolder fixturesViewHolder;
     private DateFormat dateFormat;
     private Date myDate;
+    private int count=0;
+    private CompositeDisposable compositeDisposable=new CompositeDisposable();
 
 
     public FixturesAdapter(List<Matches> matchesList, Context context) {
@@ -54,59 +64,81 @@ public class FixturesAdapter extends RecyclerView.Adapter<FixturesAdapter.Fixtur
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FixturesAdapter.FixturesViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FixturesViewHolder holder, int position, @NonNull List<Object> payloads) {
+        super.onBindViewHolder(holder, position, payloads);
+    }
 
-        Log.d(TAG, "\n" +
-                ConsoleColorConstants.TOP_BORDER + "\n" +
-                ConsoleColorConstants.HORIZONTAL_LINE + "  TEAMS LIST " + "\n" + "");
+    @Override
+    public void onBindViewHolder(@NonNull FixturesAdapter.FixturesViewHolder holder, int position) {
+        if(matchesList.get(position).getStatus().equals("FINISHED")) {
+            holder.homeTeamScore.setVisibility(View.VISIBLE);
+            holder.awayTeamScore.setVisibility(View.VISIBLE);
+        }
+           count++;
+
+            Log.d(TAG, "\n" +
+                    ConsoleColorConstants.TOP_BORDER + "\n" +
+                    ConsoleColorConstants.HORIZONTAL_LINE + "  TEAMS LIST " + "\n" + "");
 
             Log.d("",
                     ConsoleColorConstants.MIDDLE_BORDER + "\n" +
-                            ConsoleColorConstants.HORIZONTAL_LINE + "Home Team  = " +matchesList.get(position).getHomeTeam().getHomeTeamName()+ "\n" +
+                            ConsoleColorConstants.HORIZONTAL_LINE + "Home Team  = " + matchesList.get(position).getHomeTeam().getHomeTeamName() + "\n" +
                             ConsoleColorConstants.HORIZONTAL_LINE + "AWAy Team  = " + matchesList.get(position).getAwayTeam().getAwayTeamName() + "\n" +
                             ConsoleColorConstants.BOTTOM_BORDER
             );
 
-        holder.homeTeamName.setText(matchesList.get(position).getHomeTeam().getHomeTeamName());
-        holder.awayTeamName.setText(matchesList.get(position).getAwayTeam().getAwayTeamName());
-        Glide.with(context).load(R.drawable.header_picture).into(holder.homeTeamImage);
-        Glide.with(context).load(R.drawable.header_picture).into(holder.awayTeamImage);
-        String utcTime=matchesList.get(position).getUtcDate();
 
-        try {
-            DateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date date = utcFormat.parse(utcTime);
+            holder.homeTeamName.setText(matchesList.get(position).getHomeTeam().getHomeTeamName());
+            holder.awayTeamName.setText(matchesList.get(position).getAwayTeam().getAwayTeamName());
+            holder.homeTeamScore.setText(matchesList.get(position).getScore().getFullTime().getHomeTeamScore());
+            holder.awayTeamScore.setText(matchesList.get(position).getScore().getFullTime().getAwayTeamScore());
+//            Glide.with(context).load(R.drawable.header_picture).into(holder.homeTeamImage);
+//            Glide.with(context).load(R.drawable.header_picture).into(holder.awayTeamImage);
+            String utcTime = matchesList.get(position).getUtcDate();
 
-            DateFormat pstFormat = new SimpleDateFormat("HH:mm");
-            pstFormat.setTimeZone(TimeZone.getTimeZone("PST"));
-            holder.time.setText(pstFormat.format(date).toString());
-            System.out.println(pstFormat.format(date));
-        } catch (ParseException e){
-            e.printStackTrace();
-            Log.d(TAG,"on parse error");
-        }
 
+            try {
+                DateFormat utcFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                utcFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                Date date = utcFormat.parse(utcTime);
+
+                DateFormat pstFormat = new SimpleDateFormat("HH:mm");
+                pstFormat.setTimeZone(TimeZone.getTimeZone("PST"));
+                holder.time.setText(pstFormat.format(date).toString());
+                System.out.println(pstFormat.format(date));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                Log.d(TAG, "on parse error");
+            }
+
+
+    }
+
+    public void updateFixtures(List<Matches>matches){
+        final FixturesCallback fixturesCallback= new FixturesCallback(matchesList,matches);
+        final DiffUtil.DiffResult diffResult=DiffUtil.calculateDiff(fixturesCallback);
+        diffResult.dispatchUpdatesTo(this);
     }
 
 
     @Override
     public int getItemCount() {
-        return matchesList.size();
+        Log.d(TAG, "COUNT= "+count);
+        return (matchesList.size());
     }
 
     public class FixturesViewHolder extends RecyclerView.ViewHolder {
 
-        TextView homeTeamName, awayTeamName, time;
-        ImageView homeTeamImage, awayTeamImage;
+        TextView homeTeamName, awayTeamName, time, homeTeamScore, awayTeamScore;
+
 
         public FixturesViewHolder(View view) {
             super(view);
             time=view.findViewById(R.id.time_fixture);
             homeTeamName = view.findViewById(R.id.home_team_name);
             awayTeamName = view.findViewById(R.id.away_team_name);
-            homeTeamImage = view.findViewById(R.id.home_team_image);
-            awayTeamImage = view.findViewById(R.id.away_team_image);
+            homeTeamScore = view.findViewById(R.id.home_team_score);
+            awayTeamScore = view.findViewById(R.id.away_team_score);
         }
 
     }

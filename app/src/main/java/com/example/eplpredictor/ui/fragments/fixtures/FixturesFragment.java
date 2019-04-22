@@ -18,7 +18,9 @@ import com.example.eplpredictor.R;
 import com.example.eplpredictor.adapter.FixturesAdapter;
 import com.example.eplpredictor.adapter.RecyclerViewClickListener;
 import com.example.eplpredictor.model.remote.Fixtures;
+import com.example.eplpredictor.model.remote.Matches;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,9 +32,10 @@ public class FixturesFragment extends Fragment implements FixturesContract.View,
     RecyclerView recyclerView;
     private TextView textView;
     private ProgressDialog progressDialog;
-    private Fixtures fixtures;
+
     private FixturesAdapter fixturesAdapter;
     private FixturesContract.Presenter presenter;
+
 
     public FixturesFragment(){}
 
@@ -63,8 +66,10 @@ public class FixturesFragment extends Fragment implements FixturesContract.View,
     @Override
     public void displayResult(Fixtures fixtures) {
         if(fixtures!=null){
+
             fixturesAdapter=new FixturesAdapter(fixtures.getMatches(),getActivity());
             recyclerView.setAdapter(fixturesAdapter);
+            fixturesAdapter.updateFixtures(fixtures.getMatches());
         }
     }
 

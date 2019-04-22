@@ -4,9 +4,12 @@ import android.util.Log;
 
 import com.example.eplpredictor.BuildConfig;
 import com.example.eplpredictor.model.remote.Fixtures;
+import com.example.eplpredictor.model.remote.Matches;
 import com.example.eplpredictor.network.NetworkClient;
 import com.example.eplpredictor.network.RestApi;
 import com.example.eplpredictor.utils.ErrorMessageFactory;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -22,9 +25,9 @@ public class FixturesPresenter implements FixturesContract.Presenter {
 
     private static String TAG = FixturesPresenter.class.getSimpleName();
     private FixturesContract.View view;
-    private String errorMessage;
+    private String errorMessage,status;
     private CompositeDisposable disposable = new CompositeDisposable();
-
+    private List<Matches> matchesList;
     public FixturesPresenter(FixturesContract.View view) {
         this.view = view;
         this.view.setPresenter(this);
@@ -65,13 +68,16 @@ public class FixturesPresenter implements FixturesContract.Presenter {
     }
 
     private Observable<Fixtures> fixturesObservable() {
+
         return NetworkClient.getRetrofit()
                 .create(RestApi.class)
-                .getFixtures(BuildConfig.apikey, 34);
+                .getFixtures(BuildConfig.apikey, 35);
     }
 
     @Override
     public void clearDisposables() {
         disposable.dispose();
     }
+
+
 }
