@@ -26,9 +26,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by aakash on 16,April,2019
@@ -87,6 +90,8 @@ public class FixturesAdapter extends RecyclerView.Adapter<FixturesAdapter.Fixtur
                             ConsoleColorConstants.BOTTOM_BORDER
             );
 
+            performRx(holder,position);
+
 
             holder.homeTeamName.setText(matchesList.get(position).getHomeTeam().getHomeTeamName());
             holder.awayTeamName.setText(matchesList.get(position).getAwayTeam().getAwayTeamName());
@@ -112,6 +117,11 @@ public class FixturesAdapter extends RecyclerView.Adapter<FixturesAdapter.Fixtur
             }
 
 
+    }
+    private void performRx(FixturesAdapter.FixturesViewHolder holder, int position){
+        Completable.fromAction(()->
+                    holder.homeTeamName.setText(matchesList.get(position).getHomeTeam().getHomeTeamName())
+        ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public void updateFixtures(List<Matches>matches){

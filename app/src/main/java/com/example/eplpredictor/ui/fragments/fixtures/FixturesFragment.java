@@ -16,12 +16,18 @@ import android.widget.TextView;
 
 import com.example.eplpredictor.R;
 import com.example.eplpredictor.adapter.FixturesAdapter;
+import com.example.eplpredictor.adapter.FixturesCallback;
 import com.example.eplpredictor.adapter.RecyclerViewClickListener;
 import com.example.eplpredictor.model.remote.Fixtures;
 import com.example.eplpredictor.model.remote.Matches;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by aakash on 16,April,2019
@@ -31,6 +37,7 @@ public class FixturesFragment extends Fragment implements FixturesContract.View,
     private static final String TAG=FixturesFragment.class.getSimpleName();
     RecyclerView recyclerView;
     private TextView textView;
+    private Fixtures fixtures;
     private ProgressDialog progressDialog;
 
     private FixturesAdapter fixturesAdapter;
@@ -69,7 +76,8 @@ public class FixturesFragment extends Fragment implements FixturesContract.View,
 
             fixturesAdapter=new FixturesAdapter(fixtures.getMatches(),getActivity());
             recyclerView.setAdapter(fixturesAdapter);
-            fixturesAdapter.updateFixtures(fixtures.getMatches());
+            //fixturesAdapter.updateFixtures(fixtures.getMatches());
+            fetchObservable();
         }
     }
 
@@ -90,6 +98,14 @@ public class FixturesFragment extends Fragment implements FixturesContract.View,
     @Override
     public void showToast(String message) {
 
+    }
+
+    private void fetchObservable(){
+
+        Completable.fromAction(()->
+                fixturesAdapter.updateFixtures(fixtures.getMatches()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 
