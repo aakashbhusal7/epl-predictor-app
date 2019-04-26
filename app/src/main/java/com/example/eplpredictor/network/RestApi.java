@@ -16,8 +16,7 @@ public interface RestApi {
 
     @GET("competitions/2021/matches")
     Observable<Fixtures>getFixtures(@Header("X-Auth-Token")String token,
-                                    @Query("matchday") int matchday
+                                    @Query("matchday") String matchday
                                     );
-
 
 }

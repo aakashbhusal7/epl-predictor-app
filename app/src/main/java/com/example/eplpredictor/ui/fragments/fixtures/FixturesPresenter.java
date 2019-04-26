@@ -9,6 +9,7 @@ import com.example.eplpredictor.network.NetworkClient;
 import com.example.eplpredictor.network.RestApi;
 import com.example.eplpredictor.utils.ErrorMessageFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -27,7 +28,11 @@ public class FixturesPresenter implements FixturesContract.Presenter {
     private FixturesContract.View view;
     private String errorMessage,status;
     private CompositeDisposable disposable = new CompositeDisposable();
-    private List<Matches> matchesList;
+    private List<Matches>matchesList=new ArrayList<>();
+    private List<Matches> matchesList1=new ArrayList<>();
+    private Fixtures fixtures1;
+    private String matchweek;
+
     public FixturesPresenter(FixturesContract.View view) {
         this.view = view;
         this.view.setPresenter(this);
@@ -41,6 +46,7 @@ public class FixturesPresenter implements FixturesContract.Presenter {
                 .doOnNext(new Consumer<Fixtures>() {
                     @Override
                     public void accept(Fixtures fixtures) throws Exception {
+                        filterMatchweek(fixtures);
                     }
                 }).observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<Fixtures>() {
@@ -66,13 +72,47 @@ public class FixturesPresenter implements FixturesContract.Presenter {
                 ));
 
     }
+    private String filterMatchweek(Fixtures fixtures){
+        if(fixtures!=null) {
+            matchweek= fixtures.getMatches().get(0).getSeason().getCurrentMatchday();
+        }
+        return matchweek;
+    }
+
+    private void fetchData2(){
+        disposable.add(fixturesObservable()
+            .subscribeOn(Schedulers.io())
+                .doOnNext(new Consumer<Fixtures>() {
+                    @Override
+                    public void accept(Fixtures fixtures) throws Exception {
+                        fixtures1=fixtures;
+                    }
+                }).observeOn(AndroidSchedulers.mainThread()).subscribeWith(new DisposableObserver<Fixtures>(){
+                    @Override
+                    public void onNext(Fixtures fixtures) {
+                        fixtures1=fixtures;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
+    }
 
     private Observable<Fixtures> fixturesObservable() {
 
         return NetworkClient.getRetrofit()
                 .create(RestApi.class)
-                .getFixtures(BuildConfig.apikey, 35);
+                .getFixtures(BuildConfig.apikey,filterMatchweek(fixtures1));
     }
+
+
 
     @Override
     public void clearDisposables() {

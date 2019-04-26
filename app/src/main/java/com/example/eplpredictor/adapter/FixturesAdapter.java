@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -67,11 +68,6 @@ public class FixturesAdapter extends RecyclerView.Adapter<FixturesAdapter.Fixtur
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FixturesViewHolder holder, int position, @NonNull List<Object> payloads) {
-        super.onBindViewHolder(holder, position, payloads);
-    }
-
-    @Override
     public void onBindViewHolder(@NonNull FixturesAdapter.FixturesViewHolder holder, int position) {
         if(matchesList.get(position).getStatus().equals("FINISHED")) {
             holder.homeTeamScore.setVisibility(View.VISIBLE);
@@ -89,9 +85,6 @@ public class FixturesAdapter extends RecyclerView.Adapter<FixturesAdapter.Fixtur
                             ConsoleColorConstants.HORIZONTAL_LINE + "AWAy Team  = " + matchesList.get(position).getAwayTeam().getAwayTeamName() + "\n" +
                             ConsoleColorConstants.BOTTOM_BORDER
             );
-
-            performRx(holder,position);
-
 
             holder.homeTeamName.setText(matchesList.get(position).getHomeTeam().getHomeTeamName());
             holder.awayTeamName.setText(matchesList.get(position).getAwayTeam().getAwayTeamName());
@@ -118,10 +111,28 @@ public class FixturesAdapter extends RecyclerView.Adapter<FixturesAdapter.Fixtur
 
 
     }
-    private void performRx(FixturesAdapter.FixturesViewHolder holder, int position){
-        Completable.fromAction(()->
-                    holder.homeTeamName.setText(matchesList.get(position).getHomeTeam().getHomeTeamName())
-        ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    private String performRxhomeTeamName(FixturesAdapter.FixturesViewHolder holder, int position){
+        return Observable.just(matchesList.get(position).getHomeTeam().getHomeTeamName())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).toString();
+    }
+
+    private String performRxawayTeamName(FixturesAdapter.FixturesViewHolder holder, int position){
+         return Completable.fromAction(()->
+                holder.awayTeamName.setText(matchesList.get(position).getAwayTeam().getAwayTeamName())
+        ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).toString();
+    }
+
+    private String performRxhomeTeamScore(FixturesAdapter.FixturesViewHolder holder, int position){
+         return Completable.fromAction(()->
+                holder.homeTeamName.setText(matchesList.get(position).getScore().getFullTime().getHomeTeamScore())
+        ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).toString();
+    }
+
+    private String performRxawayTeamScore(FixturesAdapter.FixturesViewHolder holder, int position){
+         return Completable.fromAction(()->
+                holder.homeTeamName.setText(matchesList.get(position).getScore().getFullTime().getAwayTeamScore())
+        ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).toString();
     }
 
     public void updateFixtures(List<Matches>matches){

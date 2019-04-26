@@ -27,6 +27,10 @@ public class Matches {
     @Expose
     private Score score;
 
+    @SerializedName("season")
+    @Expose
+    private Season season;
+
     @SerializedName("homeTeam")
     @Expose
     private HomeTeam homeTeam;
@@ -89,5 +93,13 @@ public class Matches {
 
     public void setAwayTeam(AwayTeam awayTeam) {
         this.awayTeam = awayTeam;
+    }
+
+    public Season getSeason() {
+        return season;
+    }
+
+    public void setSeason(Season season) {
+        this.season = season;
     }
 }
