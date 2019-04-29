@@ -17,16 +17,22 @@ import com.example.eplpredictor.model.remote.Matches;
 import com.example.eplpredictor.utils.ConsoleColorConstants;
 import com.example.eplpredictor.utils.DateParserFactory;
 
+import org.reactivestreams.Subscription;
+
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.Subject;
 
 /**
  * Created by aakash on 16,April,2019
@@ -79,7 +85,7 @@ public class FixturesAdapter extends RecyclerView.Adapter<FixturesAdapter.Fixtur
                         ConsoleColorConstants.HORIZONTAL_LINE + "AWAy Team  = " + matchesList.get(position).getAwayTeam().getAwayTeamName() + "\n" +
                         ConsoleColorConstants.BOTTOM_BORDER
         );
-
+        holder.startRx();
         holder.homeTeamName.setText(matchesList.get(position).getHomeTeam().getHomeTeamName());
         holder.awayTeamName.setText(matchesList.get(position).getAwayTeam().getAwayTeamName());
         holder.homeTeamScore.setText(matchesList.get(position).getScore().getFullTime().getHomeTeamScore());
@@ -110,7 +116,7 @@ public class FixturesAdapter extends RecyclerView.Adapter<FixturesAdapter.Fixtur
     public class FixturesViewHolder extends RecyclerView.ViewHolder {
 
         TextView homeTeamName, awayTeamName, time, homeTeamScore, awayTeamScore;
-
+        Subscription subscription;
 
         public FixturesViewHolder(View view) {
             super(view);
@@ -119,6 +125,63 @@ public class FixturesAdapter extends RecyclerView.Adapter<FixturesAdapter.Fixtur
             awayTeamName = view.findViewById(R.id.away_team_name);
             homeTeamScore = view.findViewById(R.id.home_team_score);
             awayTeamScore = view.findViewById(R.id.away_team_score);
+        }
+        public void startRx(){
+            Observable.interval(2, TimeUnit.MILLISECONDS)
+                    .map(task ->(matchesList)
+                    ).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subject<List<Matches>>() {
+                        @Override
+                        public boolean hasObservers() {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean hasThrowable() {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean hasComplete() {
+                            return false;
+                        }
+
+                        @Override
+                        public Throwable getThrowable() {
+                            return null;
+                        }
+
+                        @Override
+                        protected void subscribeActual(Observer<? super List<Matches>> observer) {
+
+                        }
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(List<Matches> matches) {
+                            String homeTeamName=matches.get(getAdapterPosition()).getHomeTeam().getHomeTeamName();
+                            String awayTeamName=matches.get(getAdapterPosition()).getAwayTeam().getAwayTeamName();
+                            String homeTeamScore=matches.get(getAdapterPosition()).getScore().getFullTime().getHomeTeamScore();
+                            String awayTeamScore=matches.get(getAdapterPosition()).getScore().getFullTime().getAwayTeamScore();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+
+
         }
 
     }
