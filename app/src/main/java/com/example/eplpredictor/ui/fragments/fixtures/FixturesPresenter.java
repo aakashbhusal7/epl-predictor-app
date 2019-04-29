@@ -1,12 +1,16 @@
 package com.example.eplpredictor.ui.fragments.fixtures;
 
+import android.os.Looper;
 import android.util.Log;
 
 import com.example.eplpredictor.BuildConfig;
+import com.example.eplpredictor.adapter.FixturesAdapter;
 import com.example.eplpredictor.model.remote.Fixtures;
 import com.example.eplpredictor.model.remote.Matches;
 import com.example.eplpredictor.network.NetworkClient;
 import com.example.eplpredictor.network.RestApi;
+import com.example.eplpredictor.utils.Constants;
+import com.example.eplpredictor.utils.DateParserFactory;
 import com.example.eplpredictor.utils.ErrorMessageFactory;
 
 import java.util.ArrayList;
@@ -26,12 +30,12 @@ public class FixturesPresenter implements FixturesContract.Presenter {
 
     private static String TAG = FixturesPresenter.class.getSimpleName();
     private FixturesContract.View view;
-    private String errorMessage,status;
+    private String errorMessage, status;
     private CompositeDisposable disposable = new CompositeDisposable();
-    private List<Matches>matchesList=new ArrayList<>();
-    private List<Matches> matchesList1=new ArrayList<>();
+    private List<Matches> matchesList = new ArrayList<>();
+    private List<Matches> matchesList1 = new ArrayList<>();
     private Fixtures fixtures1;
-    private String matchweek;
+    private int matchweek;
 
     public FixturesPresenter(FixturesContract.View view) {
         this.view = view;
@@ -40,13 +44,12 @@ public class FixturesPresenter implements FixturesContract.Presenter {
 
     @Override
     public void fetchData() {
-        view.showProgressDialog();
         disposable.add(fixturesObservable()
                 .subscribeOn(Schedulers.io())
                 .doOnNext(new Consumer<Fixtures>() {
                     @Override
                     public void accept(Fixtures fixtures) throws Exception {
-                        filterMatchweek(fixtures);
+
                     }
                 }).observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<Fixtures>() {
@@ -72,25 +75,29 @@ public class FixturesPresenter implements FixturesContract.Presenter {
                 ));
 
     }
-    private String filterMatchweek(Fixtures fixtures){
-        if(fixtures!=null) {
-            matchweek= fixtures.getMatches().get(0).getSeason().getCurrentMatchday();
-        }
-        return matchweek;
-    }
 
-    private void fetchData2(){
-        disposable.add(fixturesObservable()
-            .subscribeOn(Schedulers.io())
+    @Override
+    public void fetchData2() {
+        view.showProgressDialog();
+        disposable.add(fixturesObservableWithoutFilter()
+                .subscribeOn(Schedulers.io())
                 .doOnNext(new Consumer<Fixtures>() {
                     @Override
                     public void accept(Fixtures fixtures) throws Exception {
-                        fixtures1=fixtures;
+                        String result = DateParserFactory.compareDate(DateParserFactory.getUtcDate(fixtures.getCompetition().getLastUpdatedTime()), DateParserFactory.getTodayDate());
+                        Log.d(TAG, "RESULT= " + result);
+                        if (result.equals(Constants.DATE_AFTER_FLAG)) {
+                            matchweek = (Integer.parseInt(fixtures.getMatches().get(0).getSeason().getCurrentMatchday()) + 1);
+                        } else {
+                            matchweek = Integer.parseInt(fixtures.getMatches().get(0).getSeason().getCurrentMatchday());
+                        }
+                        Log.d(TAG, "MATCHWEEK= " + matchweek);
+                        System.out.println("Is mainthread() = " + (Looper.getMainLooper() == Looper.myLooper()));
                     }
-                }).observeOn(AndroidSchedulers.mainThread()).subscribeWith(new DisposableObserver<Fixtures>(){
+                }).observeOn(AndroidSchedulers.mainThread()).subscribeWith(new DisposableObserver<Fixtures>() {
                     @Override
                     public void onNext(Fixtures fixtures) {
-                        fixtures1=fixtures;
+                       fetchData();
                     }
 
                     @Override
@@ -100,24 +107,34 @@ public class FixturesPresenter implements FixturesContract.Presenter {
 
                     @Override
                     public void onComplete() {
-
+                        //fetchData();
                     }
                 }));
     }
+
 
     private Observable<Fixtures> fixturesObservable() {
 
         return NetworkClient.getRetrofit()
                 .create(RestApi.class)
-                .getFixtures(BuildConfig.apikey,filterMatchweek(fixtures1));
+                .getFixtures(BuildConfig.apikey, String.valueOf(matchweek));
     }
 
+    private Observable<Fixtures> fixturesObservableWithoutFilter() {
+        return NetworkClient.getRetrofit()
+                .create(RestApi.class)
+                .getFixturesWithoutFilter(BuildConfig.apikey);
+    }
+
+    private void bindAdapter(FixturesAdapter.FixturesViewHolder holder, int position){
+        String homeTeamName=matchesList.get(position).getHomeTeam().getHomeTeamName();
+
+    }
 
 
     @Override
     public void clearDisposables() {
         disposable.dispose();
     }
-
 
 }

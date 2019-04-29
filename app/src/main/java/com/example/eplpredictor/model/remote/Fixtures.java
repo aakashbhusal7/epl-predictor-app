@@ -22,6 +22,10 @@ public class Fixtures {
     @Expose
     private List<Matches>matches=null;
 
+    @SerializedName("competition")
+    @Expose
+    private Competition competition;
+
     public int getCount() {
         return count;
     }
@@ -44,5 +48,13 @@ public class Fixtures {
 
     public void setMatches(List<Matches> matches) {
         this.matches = matches;
+    }
+
+    public Competition getCompetition() {
+        return competition;
+    }
+
+    public void setCompetition(Competition competition) {
+        this.competition = competition;
     }
 }

@@ -12,5 +12,7 @@ public class Constants {
     public static final int CONNECT_TIMEOUT=1;
     public static final int WRITE_TIMEOUT=20;
     public static final int READ_TIMEOUT=30;
+    public static final String DATE_AFTER_FLAG="after";
+    public static final String DATE_BEFORE_FLAG="before";
 
 }

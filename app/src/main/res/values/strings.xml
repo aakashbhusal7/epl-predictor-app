@@ -20,4 +20,5 @@
     <string name="contactUs">COntact</string>
     <string name="fixtures_fragment">FIXTURES_FRAGMENT</string>
     <string name="alert_dialog_positive">Ok</string>
+    <string name="fixtures_list_message">Generating fixtures</string>
 </resources>
