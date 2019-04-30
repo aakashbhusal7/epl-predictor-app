@@ -20,6 +20,7 @@ public class FixturesCallback extends DiffUtil.Callback {
         this.newMatchList=newMatchList;
     }
 
+
     @Override
     public int getOldListSize() {
         return oldMatchList.size();

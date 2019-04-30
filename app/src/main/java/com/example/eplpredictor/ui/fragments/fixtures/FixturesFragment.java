@@ -18,7 +18,10 @@ import com.example.eplpredictor.adapter.FixturesAdapter;
 import com.example.eplpredictor.adapter.RecyclerViewClickListener;
 import com.example.eplpredictor.model.remote.Fixtures;
 
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -103,6 +106,7 @@ public class FixturesFragment extends Fragment implements FixturesContract.View,
                 fixturesAdapter.updateFixtures(fixtures.getMatches()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+
     }
 
 
