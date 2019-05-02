@@ -22,4 +22,5 @@ public interface RestApi {
     @GET("competitions/2021/matches")
     Observable<Fixtures>getFixturesWithoutFilter(@Header("X-Auth-Token")String token);
 
+
 }
